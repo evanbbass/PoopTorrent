@@ -1,3 +1,5 @@
+package PoopTorrent;
+
 /*
  *                     CEN5501C Project2
  * This is the program starting remote processes.
@@ -6,8 +8,6 @@
  * or other environments not in CISE, it is not guaranteed to work properly.
  * It is your responsibility to adapt this program to your running environment.
  */
-
-package PoopTorrent;
 
 public class RemotePeerInfo {
 	public String peerId;
