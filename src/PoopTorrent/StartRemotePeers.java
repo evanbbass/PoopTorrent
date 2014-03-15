@@ -7,6 +7,8 @@
  * It is your responsibility to adapt this program to your running environment.
  */
 
+package PoopTorrent;
+
 import java.io.*;
 import java.util.*;
 
