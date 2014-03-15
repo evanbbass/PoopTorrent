@@ -1,17 +1,15 @@
 package PoopTorrent;
 
-public class Program {
+import java.io.IOException;
 
-	public Program() {
-		// TODO Auto-generated constructor stub
-	}
+public class Program {
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		System.out.println("Hooray for PoopTorrent! W00t!");
-
+		
 	}
 
 }
