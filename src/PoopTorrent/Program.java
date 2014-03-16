@@ -1,15 +1,35 @@
-package PoopTorrent;
+package poopTorrent;
 
-import java.io.IOException;
+/**
+ * Title: CNT 4007C Project
+ * @author Derek Poirier
+ * @author Evan Bass
+ * @author Stewart Reive
+ * 
+ * Project: Implement BitTorrent-like Peer-to-Peer software
+ */
 
-public class Program {
+import java.util.logging.Logger;
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) throws IOException {
+public class Program
+{
+	private static Config myConfig;
+	private static Logger log;
+	
+	public static void main(String[] args)
+	{
 		System.out.println("Hooray for PoopTorrent! W00t!");
-		
+
+		try
+		{
+			myConfig = new Config();
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		log = Logger.getLogger("MyLog");
 	}
 
 }

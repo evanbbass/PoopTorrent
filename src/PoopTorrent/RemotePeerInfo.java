@@ -1,4 +1,4 @@
-package PoopTorrent;
+package poopTorrent;
 
 /*
  *                     CEN5501C Project2
