@@ -161,7 +161,7 @@ public class PeerInfo
 			str += "1";
 		else
 			str += "0";
-		
+
 		return str;
 	}
 }

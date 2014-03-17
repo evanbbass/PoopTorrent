@@ -12,7 +12,7 @@ public class FileBits
 {
 	private byte[] bitfield;
 	private int numBits;
-	private boolean hasEntireFile;
+	private boolean complete;
 	
 	public FileBits(int numBits)
 	{
@@ -23,7 +23,7 @@ public class FileBits
 	{
 		createBitfield(numBits);
 		this.numBits = numBits;
-		hasEntireFile = hasFile;
+		complete = hasFile;
 	}
 
 	// Getters/Setters
@@ -67,18 +67,18 @@ public class FileBits
 	 * Gets whether or not it has the entire file
 	 * @return the hasEntireFile
 	 */
-	public boolean hasEntireFile()
+	public boolean isComplete()
 	{
-		return hasEntireFile;
+		return complete;
 	}
 
 	/**
 	 * Sets whether it has the entire file
 	 * @param hasEntireFile the hasEntireFile to set
 	 */
-	public void setHasEntireFile(boolean hasEntireFile)
+	public void setComplete(boolean complete)
 	{
-		this.hasEntireFile = hasEntireFile;
+		this.complete = complete;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class FileBits
 		
 		for(int i = 0; i < bitfield.length; i++)
 		{
-			bitfield[i] = (byte) (hasEntireFile() ? 1 : 0);
+			bitfield[i] = (byte) (isComplete() ? 1 : 0);
 //			if(hasEntireFile())
 //			{
 //				bitfield[i] = 1;
