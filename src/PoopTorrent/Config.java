@@ -56,7 +56,7 @@ public class Config
 			    if (st.countTokens() != 2)
 			    {
 			    	//TODO Make this more specific pls.
-			    	//throw new Exception("FUCK");
+			    	//throw new Exception("Wrong number of tokens");
 			    }
 			    else
 			    {
