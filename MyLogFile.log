@@ -1,2 +1,20 @@
-Mar 16, 2014 11:49:44 PM poopTorrent.Peer main
-INFO: penis
+Mar 17, 2014 4:21:40 PM poopTorrent.Peer main
+INFO: Initialized log
+Mar 17, 2014 4:21:40 PM poopTorrent.Peer main
+INFO: Config file:
+NumberOfPreferredNeighbors 2
+UnchokingInterval 5
+OptimisticUnchokingInterval 15
+FileName TheFile.dat
+FileSize 10000232
+PieceSize 32768
+
+Mar 17, 2014 4:21:40 PM poopTorrent.Peer main
+INFO: Peer Info:
+1001 127.0.0.1 6001 1
+1002 127.0.0.1 6002 0
+1003 127.0.0.1 6003 0
+1004 127.0.0.1 6004 0
+1005 127.0.0.1 6005 0
+1006 127.0.0.1 6006 0
+

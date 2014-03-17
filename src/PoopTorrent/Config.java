@@ -25,7 +25,6 @@ public class Config
 	/**
 	 * Initializes the configuration based on the information in the
 	 * Common.cfg file. For now the path is hard coded.
-	 * @throws Exception A general exception. Should be more specific later.
 	 */
 	public Config()
 	{
@@ -36,7 +35,6 @@ public class Config
 	 * Overloaded constructor that takes in the file path of the
 	 * Common.cfg file.
 	 * @param commonConfigPath The path to the Common.cfg file.
-	 * @throws Exception A general exception. Should be more specific later.
 	 */
 	public Config(String commonConfigPath)
 	{
@@ -57,7 +55,7 @@ public class Config
 			    if (st.countTokens() != 2)
 			    {
 			    	//TODO Make this more specific pls.
-			    	//throw new Exception("Wrong number of tokens");
+			    	throw new IOException("Wrong number of tokens");
 			    }
 			    else
 			    {
