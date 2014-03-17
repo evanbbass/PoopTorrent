@@ -5,11 +5,12 @@ package poopTorrent;
  * @author Evan Bass
  * @author Stewart Reive
  * 
- * This class reads in the Common.cfg and(?) PeerInfo.cfg
+ * This class reads in the Common.cfg
  */
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class Config
@@ -21,56 +22,112 @@ public class Config
 	int FileSize;
 	int PieceSize;
 	
-	public Config() throws Exception
+	/**
+	 * Initializes the configuration based on the information in the
+	 * Common.cfg file. For now the path is hard coded.
+	 * @throws Exception A general exception. Should be more specific later.
+	 */
+	public Config()
 	{
-		String commonConfigPath = "C:\\Users\\Owner\\Documents\\CNT 4007C\\Project\\PoopTorrent\\Common.cfg";
-		BufferedReader reader = new BufferedReader(new FileReader(commonConfigPath));
-		
-		String line = null;
-		while ((line = reader.readLine()) != null)
+		this("Common.cfg");
+	}
+	
+	/**
+	 * Overloaded constructor that takes in the file path of the
+	 * Common.cfg file.
+	 * @param commonConfigPath The path to the Common.cfg file.
+	 * @throws Exception A general exception. Should be more specific later.
+	 */
+	public Config(String commonConfigPath)
+	{
+		//String commonConfigPath = "C:\\Users\\Owner\\Documents\\CNT 4007C\\Project\\PoopTorrent\\Common.cfg";
+		BufferedReader reader = null;
+
+		try
 		{
+			reader = new BufferedReader(new FileReader(commonConfigPath));
+			String line = null;
 
-	    	StringTokenizer st = new StringTokenizer(line);
+			while ((line = reader.readLine()) != null)
+			{
+		    	StringTokenizer st = new StringTokenizer(line);
 
-		    if (st.countTokens() != 2)
-		    {
-		    	throw new Exception("FUCK");
-		    }
-		    else
-		    {
-		    	String tok = st.nextToken();
-		    	
-		    	if (tok.equals("NumberOfPreferredNeighbors"))
-		    	{
-		    		NumberOfPreferredNeighbors = Integer.parseInt(st.nextToken());
-		    	}
-
-		    	if (tok.equals("UnchokingInterval"))
-		    	{
-		    		UnchokingInterval = Integer.parseInt(st.nextToken());
-		    	}
-
-		    	if (tok.equals("OptimisticUnchokingInterval"))
-		    	{
-		    		OptimisticUnchokingInterval = Integer.parseInt(st.nextToken());
-		    	}
-
-		    	if (tok.equals("FileName"))
-		    	{
-		    		FileName = st.nextToken();
-		    	}
-
-		    	if (tok.equals("FileSize"))
-		    	{
-		    		FileSize = Integer.parseInt(st.nextToken());
-		    	}
-
-		    	if (tok.equals("PieceSize"))
-		    	{
-		    		PieceSize = Integer.parseInt(st.nextToken());
-		    	}
-		    	
-		    }
+		    	// Check to make sure each line only has two items
+			    if (st.countTokens() != 2)
+			    {
+			    	//TODO Make this more specific pls.
+			    	//throw new Exception("FUCK");
+			    }
+			    else
+			    {
+			    	String tok = st.nextToken();
+			    	
+			    	if (tok.equals("NumberOfPreferredNeighbors"))
+			    	{
+			    		// Read in NumberOfPreferredNeighbors
+			    		NumberOfPreferredNeighbors = Integer.parseInt(st.nextToken());
+			    	}
+	
+			    	if (tok.equals("UnchokingInterval"))
+			    	{
+			    		// Read in UnchokingInterval
+			    		UnchokingInterval = Integer.parseInt(st.nextToken());
+			    	}
+	
+			    	if (tok.equals("OptimisticUnchokingInterval"))
+			    	{
+			    		// Read in OptimisticUnchokingInterval
+			    		OptimisticUnchokingInterval = Integer.parseInt(st.nextToken());
+			    	}
+	
+			    	if (tok.equals("FileName"))
+			    	{
+			    		// Read in FileName
+			    		FileName = st.nextToken();
+			    	}
+	
+			    	if (tok.equals("FileSize"))
+			    	{
+			    		// Read in FileSize
+			    		FileSize = Integer.parseInt(st.nextToken());
+			    	}
+	
+			    	if (tok.equals("PieceSize"))
+			    	{
+			    		// Read in PieceSize
+			    		PieceSize = Integer.parseInt(st.nextToken());
+			    	}
+			    }
+			}
 		}
+		catch (NumberFormatException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String toString()
+	{
+		return "NumberOfPreferredNeighbors " + NumberOfPreferredNeighbors + "\n" +
+				"UnchokingInterval " + UnchokingInterval + "\n" +
+				"OptimisticUnchokingInterval " + OptimisticUnchokingInterval + "\n" +
+				"FileName " + FileName + "\n" +
+				"FileSize " + FileSize + "\n" +
+				"PieceSize " + PieceSize + "\n";
 	}
 }
