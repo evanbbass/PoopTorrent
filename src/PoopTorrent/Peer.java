@@ -17,6 +17,7 @@ import java.util.logging.SimpleFormatter;
 public class Peer
 {
 	private static Config myConfig;
+	private static PeerConfig peers;
 	private static Logger log;
 
 	/**
@@ -29,6 +30,8 @@ public class Peer
 		FileHandler fh;
 		System.out.println("Initializing config...");
 		myConfig = new Config();
+		System.out.println("Initializing Peer Info...");
+		peers = new PeerConfig();
 		System.out.println("Initializing logger...");
 		log = Logger.getLogger(Peer.class.getName());
 
@@ -53,6 +56,9 @@ public class Peer
 			e.printStackTrace();  
 		}
 
-		log.info(myConfig.toString());
+		log.info("Config file:\n" +
+					myConfig.toString());
+		log.info("Peer Info:\n" +
+					peers.toString());
 	}
 }
