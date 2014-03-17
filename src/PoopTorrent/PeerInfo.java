@@ -41,7 +41,16 @@ public class PeerInfo
 		this.listeningPort = listeningPort;
 		this.hasFile = hasFile;
 	}
-
+	/*
+	public PeerInfo(int peerID, String hostName, int listeningPort, boolean hasFile)
+	{
+		this.peerID = peerID;
+		this.hostName = hostName;
+		this.listeningPort = listeningPort;
+		this.hasFile = hasFile;
+	}
+	take this out eventually
+	*/
 	// Getters/setters
 	/**
 	 * Gets the peer's ID
@@ -70,6 +79,14 @@ public class PeerInfo
 		return hostName;
 	}
 
+	/*
+	public String getHostName()
+	{
+		return hostName;
+	}
+	*/
+	//take the above out 
+	
 	/**
 	 * Sets the host file
 	 * @param hostName the hostName to set
@@ -115,6 +132,21 @@ public class PeerInfo
 		this.hasFile = hasFile;
 	}
 
+	/*
+	public String toString()
+	{
+		String str = "" + peerID + " " +
+						hostName + " " +
+						listeningPort + " ";
+		if(hasFile)
+			str += "1";
+		else
+			str += "0";
+		
+		return str;
+	}
+	take this out eventually
+	*/
 	// toString method
 	/**
 	 * @return A String representation of the info.
