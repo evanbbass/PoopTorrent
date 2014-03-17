@@ -41,7 +41,7 @@ public class Peer
 			fh.setFormatter(formatter);  
 
 			// the following statement is used to log any messages  
-			log.info("penis");
+			log.info("Initialized log");
 
 		}
 		catch (SecurityException e)
@@ -51,6 +51,8 @@ public class Peer
 		catch (IOException e)
 		{  
 			e.printStackTrace();  
-		} 
+		}
+
+		log.info(myConfig.toString());
 	}
 }
