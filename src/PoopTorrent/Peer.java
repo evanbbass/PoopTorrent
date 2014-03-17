@@ -25,7 +25,7 @@ public class Peer
 	 */
 	public static void main(String[] args)
 	{
-		System.out.println("Hooray for PoopTorrent! W00t!");
+		System.out.println("Welcome to PoopTorrent! W00t!");
 		FileHandler fh;
 		System.out.println("Initializing config...");
 		myConfig = new Config();

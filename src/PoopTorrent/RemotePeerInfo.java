@@ -1,7 +1,15 @@
 package poopTorrent;
 
+/**
+ * Title: CNT 4007C Project
+ * @author Derek Poirier
+ * @author Evan Bass
+ * @author Stewart Reive
+ * 
+ * Project: Implement BitTorrent-like Peer-to-Peer software
+ */
 /*
- *                     CEN5501C Project2
+ *
  * This is the program starting remote processes.
  * This program was only tested on CISE SunOS environment.
  * If you use another environment, for example, linux environment in CISE 

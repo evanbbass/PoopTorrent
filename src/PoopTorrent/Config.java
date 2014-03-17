@@ -45,6 +45,7 @@ public class Config
 
 		try
 		{
+			//we use a bufferedreader instead of a scanner to parse the file common.cfg 
 			reader = new BufferedReader(new FileReader(commonConfigPath));
 			String line = null;
 
@@ -123,6 +124,10 @@ public class Config
 
 	public String toString()
 	{
+		/*
+			here is where we are returning our variables
+			from the tokens we received when parsing common.cfg
+		*/
 		return "NumberOfPreferredNeighbors " + NumberOfPreferredNeighbors + "\n" +
 				"UnchokingInterval " + UnchokingInterval + "\n" +
 				"OptimisticUnchokingInterval " + OptimisticUnchokingInterval + "\n" +
