@@ -13,12 +13,12 @@ public class FileBits
 	private byte[] bitfield;
 	private int numBits;
 	private boolean complete;
-	
+
 	public FileBits(int numBits)
 	{
 		this(numBits, false);
 	}
-	
+
 	public FileBits(int numBits, boolean hasFile)
 	{
 		createBitfield(numBits);
