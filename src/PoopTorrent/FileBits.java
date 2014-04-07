@@ -92,14 +92,6 @@ public class FileBits
 		for(int i = 0; i < bitfield.length; i++)
 		{
 			bitfield[i] = (byte) (isComplete() ? 1 : 0);
-//			if(hasEntireFile())
-//			{
-//				bitfield[i] = 1;
-//			}
-//			else
-//			{
-//				bitfield[i] = 0;
-//			}
 		}
 	}
 

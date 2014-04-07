@@ -1,21 +1,11 @@
-JFLAGS = -g
-JC = javac
-.SUFFIXES: .java .class
-.java.class:
-        $(JC) $(JFLAGS) $*.java
+bin:
+	mkdir bin
 
-CLASSES = \
-        Config.java \
-        FileBits.java \
-        Peer.java \
-        PeerConfig.java \
-        PeerInfo.java \
-        RemotePeerInfo.java \
-        StartRemotePeers.java
-
-default: classes
-
-classes: $(CLASSES:.java=.class)
+build: bin
+	javac src/poopTorrent/*.java -d bin
 
 clean:
-        $(RM) *.class
+	rm -rf bin
+
+run:
+	java -classpath "./bin" poopTorrent
