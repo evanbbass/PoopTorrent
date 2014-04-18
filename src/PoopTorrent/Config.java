@@ -101,12 +101,10 @@ public class Config
 		}
 		catch (NumberFormatException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -117,122 +115,65 @@ public class Config
 			}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	// Getters/Setters
-	/**
-	 * Gets the number of preferred neighbors
-	 * @return the numberOfPreferredNeighbors
-	 */
 	public int getNumberOfPreferredNeighbors()
 	{
 		return NumberOfPreferredNeighbors;
 	}
-
-	/**
-	 * Sets the number of preferred neighbors
-	 * @param numberOfPreferredNeighbors the numberOfPreferredNeighbors to set
-	 */
 	public void setNumberOfPreferredNeighbors(int numberOfPreferredNeighbors)
 	{
 		NumberOfPreferredNeighbors = numberOfPreferredNeighbors;
 	}
 
-	/**
-	 * Gets the unchocking interval
-	 * @return the unchokingInterval
-	 */
 	public int getUnchokingInterval()
 	{
 		return UnchokingInterval;
 	}
-
-	/**
-	 * Sets the unchocking interval
-	 * @param unchokingInterval the unchokingInterval to set
-	 */
 	public void setUnchokingInterval(int unchokingInterval)
 	{
 		UnchokingInterval = unchokingInterval;
 	}
 
-	/**
-	 * @return the optimisticUnchokingInterval
-	 */
 	public int getOptimisticUnchokingInterval()
 	{
 		return OptimisticUnchokingInterval;
 	}
-
-	/**
-	 * @param optimisticUnchokingInterval the optimisticUnchokingInterval to set
-	 */
 	public void setOptimisticUnchokingInterval(int optimisticUnchokingInterval)
 	{
 		OptimisticUnchokingInterval = optimisticUnchokingInterval;
 	}
 
-	/**
-	 * Gets the name of the file being torrented
-	 * @return the fileName
-	 */
 	public String getFileName()
 	{
 		return FileName;
 	}
-
-	/**
-	 * Sets the name of the file
-	 * @param fileName the fileName to set
-	 */
 	public void setFileName(String fileName)
 	{
 		FileName = fileName;
 	}
 
-	/**
-	 * Gets the file size
-	 * @return the fileSize
-	 */
 	public int getFileSize()
 	{
 		return FileSize;
 	}
-
-	/**
-	 * Sets the file size
-	 * @param fileSize the fileSize to set
-	 */
 	public void setFileSize(int fileSize)
 	{
 		FileSize = fileSize;
 	}
 
-	/**
-	 * Gets the piece size
-	 * @return the pieceSize
-	 */
 	public int getPieceSize()
 	{
 		return PieceSize;
 	}
-
-	/**
-	 * Sets the piece size
-	 * @param pieceSize the pieceSize to set
-	 */
 	public void setPieceSize(int pieceSize)
 	{
 		PieceSize = pieceSize;
 	}
 
-	/**
-	 * @return A String representation of the configuration file
-	 */
 	public String toString()
 	{
 		/*

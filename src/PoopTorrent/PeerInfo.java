@@ -42,84 +42,42 @@ public class PeerInfo
 		this.hasFile = hasFile;
 	}
 
-	// Getters/setters
-	/**
-	 * Gets the peer's ID
-	 * @return the peerID
-	 */
 	public int getPeerID()
 	{
 		return peerID;
 	}
-
-	/**
-	 * Sets the peer's ID
-	 * @param peerID the peerID to set
-	 */
 	public void setPeerID(int peerID)
 	{
 		this.peerID = peerID;
 	}
 
-	/**
-	 * Gets the host name
-	 * @return the hostName
-	 */
 	public String getHostName()
 	{
 		return hostName;
 	}
-	
-	/**
-	 * Sets the host file
-	 * @param hostName the hostName to set
-	 */
 	public void setHostName(String hostName)
 	{
 		this.hostName = hostName;
 	}
 
-	/**
-	 * Gets the listening port
-	 * @return the listeningPort
-	 */
 	public int getListeningPort()
 	{
 		return listeningPort;
 	}
-
-	/**
-	 * Sets the listening port
-	 * @param listeningPort the listeningPort to set
-	 */
 	public void setListeningPort(int listeningPort)
 	{
 		this.listeningPort = listeningPort;
 	}
 
-	/**
-	 * Gets whether the peer has the complete file
-	 * @return the hasFile
-	 */
 	public boolean hasFile()
 	{
 		return hasFile;
 	}
-
-	/**
-	 * Sets whether the peer has the file
-	 * @param hasFile the hasFile to set
-	 */
 	public void setHasFile(boolean hasFile)
 	{
 		this.hasFile = hasFile;
 	}
 
-	// toString method
-	/**
-	 * @return A String representation of the info.
-	 * Should look the same as the PeerInfo.cfg
-	 */
 	public String toString()
 	{
 		String str = "" + peerID + " " +

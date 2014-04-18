@@ -55,12 +55,10 @@ public class PeerConfig
 		}
 		catch (NumberFormatException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -68,33 +66,20 @@ public class PeerConfig
 			try {
 				reader.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	// Getters/Setters
-	/**
-	 * @return the peers
-	 */
 	public ArrayList<PeerInfo> getPeers()
 	{
 		return peers;
 	}
-
-	/**
-	 * @param peers the peers to set
-	 */
 	public void setPeers(ArrayList<PeerInfo> peers)
 	{
 		this.peers = peers;
 	}
 
-	// toString method
-	/**
-	 * @return A string representation of each PeerInfo.
-	 */
 	public String toString()
 	{
 		String str = "";

@@ -20,10 +20,6 @@ public class Peer
 	private static PeerConfig peers;
 	private static Logger log;
 
-	/**
-	 * Main method
-	 * @param args
-	 */
 	public static void main(String[] args)
 	{
 		System.out.println("Welcome to PoopTorrent! W00t!");
