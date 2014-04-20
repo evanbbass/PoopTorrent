@@ -21,10 +21,7 @@ public class PeerInfo
 	 */
 	public PeerInfo()
 	{
-		peerID = -1;
-		hostName = null;
-		listeningPort = -1;
-		hasFile = false;
+		this(-1, null, -1, false);
 	}
 	
 	/**

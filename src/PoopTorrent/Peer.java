@@ -51,17 +51,15 @@ public class Peer
 
 		}
 		catch (SecurityException e)
-		{  
+		{
 			e.printStackTrace();  
 		}
 		catch (IOException e)
-		{  
+		{
 			e.printStackTrace();  
 		}
 
-		log.info("Config file:\n" +
-					myConfig.toString());
-		log.info("Peer Info:\n" +
-					peers.toString());
+		log.info("Config file:\n" + myConfig.toString());
+		log.info("Peer Info:\n" + peers.toString());
 	}
 }
