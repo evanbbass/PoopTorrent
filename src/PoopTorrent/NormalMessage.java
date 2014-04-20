@@ -14,7 +14,7 @@ public class NormalMessage extends Message
 {
 	/**
 	 * Standard message containing the payload to be sent.
-	 * @param messageType One byte representing the type of message (choke, unchoke, etc.). See proj. description.
+	 * @param messageType One byte representing the type of message (choke, unchoke, etc.). See project description.
 	 * @param messagePayload Payload of the message. Length is read from this
 	 */
 	public NormalMessage(byte messageType, byte[] messagePayload)

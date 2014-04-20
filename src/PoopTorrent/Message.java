@@ -10,11 +10,16 @@ package poopTorrent;
  *
  * Abstract class representing a message to be sent between peers.
  */
+
 public abstract class Message {
-	/**
-	 * I have no idea what to do here, pls halp
-	 */
+
 	byte[] messageData;
-	
-	
+
+	public byte[] getBytes() {
+		return messageData;
+	}
+	public void setBytes(byte[] messageData) {
+		this.messageData = messageData;
+	}
+
 }

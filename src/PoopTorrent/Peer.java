@@ -23,6 +23,13 @@ public class Peer
 	public static void main(String[] args)
 	{
 		System.out.println("Welcome to PoopTorrent! W00t!");
+		
+		// Testing Messages
+//		Message message = new HandshakeMessage(1001);
+//		message.getBytes();
+//		message = new NormalMessage((byte)0, "asdfj".getBytes());
+//		message.getBytes();
+		
 		FileHandler fh;
 		System.out.println("Initializing config...");
 		myConfig = new Config();

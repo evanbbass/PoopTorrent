@@ -1,6 +1,6 @@
-Mar 17, 2014 5:57:29 PM poopTorrent.Peer main
+Apr 17, 2014 9:05:06 PM poopTorrent.Peer main
 INFO: Initialized log
-Mar 17, 2014 5:57:29 PM poopTorrent.Peer main
+Apr 17, 2014 9:05:07 PM poopTorrent.Peer main
 INFO: Config file:
 NumberOfPreferredNeighbors 2
 UnchokingInterval 5
@@ -9,7 +9,7 @@ FileName TheFile.dat
 FileSize 10000232
 PieceSize 32768
 
-Mar 17, 2014 5:57:29 PM poopTorrent.Peer main
+Apr 17, 2014 9:05:07 PM poopTorrent.Peer main
 INFO: Peer Info:
 1001 127.0.0.1 6001 1
 1002 127.0.0.1 6002 0
