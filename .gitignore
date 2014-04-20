@@ -13,3 +13,5 @@
 .loadpath
 .buildpath
 bin/
+
+MyLogFile.log
