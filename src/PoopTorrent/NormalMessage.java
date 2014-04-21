@@ -12,6 +12,9 @@ import java.nio.ByteBuffer;
 
 public class NormalMessage extends Message
 {
+	private byte messageType;
+	private byte[] messagePayload;
+
 	/**
 	 * Standard message containing the payload to be sent.
 	 * @param messageType One byte representing the type of message (choke, unchoke, etc.). See project description.
@@ -28,6 +31,15 @@ public class NormalMessage extends Message
 		// Payload
 		buffer.put(messagePayload);
 		
-		messageData = buffer.array();
+		this.messageData = buffer.array();
+		this.messageType = messageType;
+		this.messagePayload = messagePayload;
+	}
+
+	public byte getMessageType() {
+		return messageType;
+	}
+	public byte[] getMessagePayload() {
+		return messagePayload;
 	}
 }
