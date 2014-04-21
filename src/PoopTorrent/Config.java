@@ -32,8 +32,7 @@ public class Config
 	}
 	
 	/**
-	 * Overloaded constructor that takes in the file path of the
-	 * Common.cfg file.
+	 * Overloaded constructor that takes in the file path of the Common.cfg file.
 	 * @param commonConfigPath The path to the Common.cfg file.
 	 */
 	public Config(String commonConfigPath)
@@ -118,60 +117,6 @@ public class Config
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public int getNumberOfPreferredNeighbors()
-	{
-		return NumberOfPreferredNeighbors;
-	}
-	public void setNumberOfPreferredNeighbors(int numberOfPreferredNeighbors)
-	{
-		NumberOfPreferredNeighbors = numberOfPreferredNeighbors;
-	}
-
-	public int getUnchokingInterval()
-	{
-		return UnchokingInterval;
-	}
-	public void setUnchokingInterval(int unchokingInterval)
-	{
-		UnchokingInterval = unchokingInterval;
-	}
-
-	public int getOptimisticUnchokingInterval()
-	{
-		return OptimisticUnchokingInterval;
-	}
-	public void setOptimisticUnchokingInterval(int optimisticUnchokingInterval)
-	{
-		OptimisticUnchokingInterval = optimisticUnchokingInterval;
-	}
-
-	public String getFileName()
-	{
-		return FileName;
-	}
-	public void setFileName(String fileName)
-	{
-		FileName = fileName;
-	}
-
-	public int getFileSize()
-	{
-		return FileSize;
-	}
-	public void setFileSize(int fileSize)
-	{
-		FileSize = fileSize;
-	}
-
-	public int getPieceSize()
-	{
-		return PieceSize;
-	}
-	public void setPieceSize(int pieceSize)
-	{
-		PieceSize = pieceSize;
 	}
 
 	public String toString()

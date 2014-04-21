@@ -16,9 +16,9 @@ import java.util.logging.SimpleFormatter;
 
 public class Peer
 {
-	private static Config myConfig;
-	private static PeerConfig peers;
-	private static Logger log;
+	static Config myConfig;
+	static PeerConfig peers;
+	static Logger log;
 
 	public static void main(String[] args)
 	{

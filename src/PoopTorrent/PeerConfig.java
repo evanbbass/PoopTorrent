@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 public class PeerConfig
 {
-	ArrayList<PeerInfo> peers = new ArrayList<PeerInfo>();
+	private ArrayList<PeerInfo> peers = new ArrayList<PeerInfo>();
 
 	public PeerConfig()
 	{
