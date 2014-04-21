@@ -10,19 +10,28 @@ package poopTorrent;
  */
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.net.*;
 
-public class Peer
+public class PeerProcess
 {
 	static Config myConfig;
 	static PeerConfig peers;
 	static Logger log;
+	static int myPeerId;
 
 	public static void main(String[] args)
 	{
 		System.out.println("Welcome to PoopTorrent! W00t!");
+		
+		if (args.length != 1)
+			throw new IllegalArgumentException("You must specify the peer ID when starting a peer process");
+		else
+			myPeerId = Integer.parseInt(args[0]);
 		
 		// Testing Messages
 //		Message message = new HandshakeMessage(1001);
@@ -35,8 +44,26 @@ public class Peer
 		myConfig = new Config();
 		System.out.println("Initializing Peer Info...");
 		peers = new PeerConfig();
+		
+		initLogger();
+		
+		ExecutorService es = Executors.newCachedThreadPool();
+		
+		es.execute(new PeerListener());
+		
+		for (int i = 0; i < peers.getPeers().size(); i++) {
+			// Connect to all peers with a Peer ID less than mine
+			if (peers.getPeers().get(i).getPeerID() < myPeerId)
+				es.execute(new PeerConnection(peers.getPeers().get(i)));
+		}
+		
+		es.shutdown();
+	}
+	
+	public static void initLogger() {
 		System.out.println("Initializing logger...");
-		log = Logger.getLogger(Peer.class.getName());
+		FileHandler fh;
+		log = Logger.getLogger(PeerProcess.class.getName());
 
 		try
 		{

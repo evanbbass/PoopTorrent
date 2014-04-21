@@ -42,7 +42,7 @@ public class PeerInfo
 		this.listeningPort = listeningPort;
 		this.interested = false;
 		this.downloadRate = 0.0;
-		this.bitfield = new FileBits(Peer.myConfig.FileSize, hasFile);
+		this.bitfield = new FileBits(PeerProcess.myConfig.FileSize, hasFile);
 		this.choked = true;
 	}
 
