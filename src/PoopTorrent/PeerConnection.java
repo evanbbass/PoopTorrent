@@ -12,14 +12,9 @@ public class PeerConnection implements Runnable {
 	private Socket s = null;
 	
 	public void run() {
-		System.out.println("Starting a new peer connection from " + PeerProcess.myPeerId + 
-				" to " + remotePeerInfo.getPeerID());
 		
 		// if we know who to connect to and we haven't connected yet, then connect now
 		if (remotePeerInfo != null && s == null) { 
-			//SocketAddress remoteAddress = 
-				//	new InetSocketAddress(remotePeerInfo.getHostName(), remotePeerInfo.getListeningPort());
-					//new InetSocketAddress("google.com", 80);
 			for (;;) {
 				try {
 					s = new Socket(remotePeerInfo.getHostName(), remotePeerInfo.getListeningPort());
@@ -45,7 +40,6 @@ public class PeerConnection implements Runnable {
 		
 		// TO-DO: WRITE THE ENTIRE STATE MACHINE FOR THE BIT-TORRENT PROTOCOL (NO BIG DEAL RIGHT???)
 		
-		
 		try {
 			s.close();
 		} catch (IOException e) {
@@ -55,9 +49,12 @@ public class PeerConnection implements Runnable {
 	
 	public PeerConnection(PeerInfo remotePeerInfo) {
 		this.remotePeerInfo = remotePeerInfo;
+		PeerProcess.connections.add(this);
 	}
 	
 	public PeerConnection(Socket s) {
 		this.s = s;
+		PeerProcess.connections.add(this);
+		PeerProcess.log.info("Incoming connection received :)");
 	}
 }
