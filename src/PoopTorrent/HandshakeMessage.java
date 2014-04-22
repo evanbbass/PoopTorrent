@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 
 public class HandshakeMessage extends Message
 {
+	private int peerID;
+
 	public HandshakeMessage(int peerID)
 	{
 		ByteBuffer buffer = ByteBuffer.allocate(32);
@@ -23,5 +25,11 @@ public class HandshakeMessage extends Message
 		buffer.putInt(peerID);
 		
 		messageData = buffer.array();
+		this.peerID = peerID;
+	}
+
+	public int getPeerID()
+	{
+		return peerID;
 	}
 }

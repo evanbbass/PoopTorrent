@@ -9,9 +9,32 @@ public class MessageUtils
 	 * @param peerID ID of the peer to send the message to
 	 * @param message Message with payload to send
 	 */
-	private static void sendMessage(int peerID, Message message) {
+	public static void sendMessage(int peerID, Message message)
+	{
 		//TODO Send the message here
 		
+	}
+
+	/**
+	 * Generates a message based on the data received
+	 * @param messageData The byte array received
+	 * @return The generated message
+	 */
+	public static Message recieveMessage(byte[] messageData)
+	{
+		ByteBuffer buffer = ByteBuffer.allocate(messageData.length);
+		buffer.put(messageData);
+		buffer.position(0);
+
+		int length = buffer.getInt();
+		byte messageType = buffer.get();
+		byte[] payload = new byte[length - 1];
+		for (int i = 0; i < length - 1; i++)
+		{
+			payload[i] = buffer.get();
+		}
+
+		return new NormalMessage(messageType, payload);
 	}
 
 	/**
