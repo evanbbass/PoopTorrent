@@ -2,10 +2,7 @@ package poopTorrent;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
 
 public class PeerConnection implements Runnable {
 	private PeerInfo remotePeerInfo = null;

@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.net.*;
 
 public class PeerProcess
 {
