@@ -10,6 +10,7 @@ package poopTorrent;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
@@ -24,6 +25,7 @@ public class PeerProcess
 	static Logger log;
 	static int myPeerId;
 	static ExecutorService es;
+	static ArrayList<PeerConnection> connections;
 
 	public static void main(String[] args)
 	{
@@ -63,7 +65,7 @@ public class PeerProcess
 				es.execute(new PeerConnection(peers.getPeers().get(i)));
 		}
 		
-		es.shutdown(); // PeerListener never terminates, so this should never finish
+		//es.shutdown(); // PeerListener never terminates, so this should never finish
 	}
 	
 	public static void initLogger() {
