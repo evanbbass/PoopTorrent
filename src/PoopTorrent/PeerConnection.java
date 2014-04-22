@@ -37,6 +37,17 @@ public class PeerConnection implements Runnable {
 		
 		// TO-DO: WRITE THE ENTIRE STATE MACHINE FOR THE BIT-TORRENT PROTOCOL (NO BIG DEAL RIGHT???)
 		
+		PeerProcess.log.info("We are sending a handshake");
+		
+		MessageUtils.handshake(s, PeerProcess.myPeerId);
+		
+		Message handshakeMsg = MessageUtils.recieveMessage(s);
+		
+		if (handshakeMsg instanceof HandshakeMessage) {
+			HandshakeMessage m = (HandshakeMessage)handshakeMsg;
+			PeerProcess.log.info("We received a handshake message from " + m.getPeerID());
+		}
+		
 		try {
 			s.close();
 		} catch (IOException e) {

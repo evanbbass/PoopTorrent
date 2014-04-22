@@ -31,6 +31,7 @@ public class PeerProcess
 	{
 		System.out.println("Welcome to PoopTorrent! W00t!");
 		
+		connections = new ArrayList<PeerConnection>();
 		if (args.length != 1)
 			throw new IllegalArgumentException("You must specify the peer ID when starting a peer process");
 		else

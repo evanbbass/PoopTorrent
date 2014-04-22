@@ -1,5 +1,10 @@
 package poopTorrent;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
@@ -12,8 +17,20 @@ public class MessageUtils
 	 */
 	private static void sendMessage(Socket socket, Message message)
 	{
-		//TODO Send the message here
-		
+		 OutputStream out = null;
+		 
+		 try {
+			out = socket.getOutputStream();
+		 } catch (IOException e) {
+			e.printStackTrace();
+		 }
+		 
+		 DataOutputStream dos = new DataOutputStream(out);
+		 try {
+			dos.write(message.getBytes(), 0, message.getBytes().length);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -21,34 +38,45 @@ public class MessageUtils
 	 * @param messageData The byte array received
 	 * @return The generated message
 	 */
-	public static Message recieveMessage(byte[] messageData)
+	public static Message recieveMessage(Socket s)
 	{
-		ByteBuffer buffer = ByteBuffer.allocate(messageData.length);
-		buffer.put(messageData);
-		buffer.position(0);
-
-		byte[] header = new byte[5];
-		for (int i = 0; i < 5; i++)
-			header[i] = buffer.get();
-		buffer.position(0);
-
-		if (header.equals("HELLO".getBytes()))
-		{
-			int peerID = buffer.getInt(27);
-
-			return new HandshakeMessage(peerID);
-		}
-		else
-		{
-			int length = buffer.getInt();
-			byte messageType = buffer.get();
-			byte[] payload = new byte[length - 1];
-			for (int i = 0; i < length - 1; i++)
-			{
-				payload[i] = buffer.get();
-			}
+		try {
+			InputStream in = s.getInputStream();
+		    DataInputStream dis = new DataInputStream(in);
+		    
+		    byte[] header = new byte[5];
+		    dis.readFully(header);
 	
-			return new NormalMessage(messageType, payload);
+		    PeerProcess.log.info("header is: " + new String(header));
+		    
+			if ( new String(header).equals("HELLO") )
+			{
+				ByteBuffer buffer = ByteBuffer.allocate(27);
+				dis.readFully(buffer.array());
+				
+				int peerID = buffer.getInt(23);
+	
+				return new HandshakeMessage(peerID);
+			}
+			else
+			{
+				ByteBuffer buffer = ByteBuffer.allocate(5);
+				buffer.put(header);
+				buffer.position(0); // reset position
+				int length = buffer.getInt();
+				byte messageType = buffer.get();
+				
+				// length includes type, so the remaining bytes are length - 1
+				PeerProcess.log.info("We are allocating a buffer of length=" + length);
+				byte[] payload = new byte[length - 1];
+				dis.readFully(payload);
+				
+				return new NormalMessage(messageType, payload);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			PeerProcess.log.info("SHIT GOT FUCKED YO :(");
+			return null;
 		}
 	}
 
@@ -56,9 +84,8 @@ public class MessageUtils
 	 * Creates and sends a handshake message to the designated peer.
 	 * @param socket Socket of the peer FUCK MY LIFE
 	 * @param peerID ID of the sender to put in the message
-	 * @param targetID ID of the peer to send the message to
 	 */
-	public static void handshake(Socket socket, int peerID, int targetID)
+	public static void handshake(Socket socket, int peerID)
 	{
 		Message message = new HandshakeMessage( peerID );
 
