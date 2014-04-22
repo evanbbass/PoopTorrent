@@ -21,8 +21,10 @@ public class PeerProcess
 {
 	static Config myConfig;
 	static PeerConfig peers;
+	static PeerInfo myPeerInfo;
 	static Logger log;
 	static int myPeerId;
+	static ExecutorService es;
 
 	public static void main(String[] args)
 	{
@@ -39,25 +41,30 @@ public class PeerProcess
 //		message = new NormalMessage((byte)0, "asdfj".getBytes());
 //		message.getBytes();
 		
-		FileHandler fh;
 		System.out.println("Initializing config...");
 		myConfig = new Config();
 		System.out.println("Initializing Peer Info...");
 		peers = new PeerConfig();
 		
+		for (int i = 0; i < peers.getPeers().size(); i++) {
+			if (peers.getPeers().get(i).getPeerID() == myPeerId)
+				myPeerInfo = peers.getPeers().get(i);
+		}
+		
 		initLogger();
 		
-		ExecutorService es = Executors.newCachedThreadPool();
+		es = Executors.newCachedThreadPool();
 		
+		// Listen for incoming connections
 		es.execute(new PeerListener());
 		
+		// connect to all peers with an ID less than this one
 		for (int i = 0; i < peers.getPeers().size(); i++) {
-			// Connect to all peers with a Peer ID less than mine
 			if (peers.getPeers().get(i).getPeerID() < myPeerId)
 				es.execute(new PeerConnection(peers.getPeers().get(i)));
 		}
 		
-		es.shutdown();
+		es.shutdown(); // PeerListener never terminates, so this should never finish
 	}
 	
 	public static void initLogger() {
