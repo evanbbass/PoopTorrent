@@ -38,7 +38,9 @@ public class PeerProcess
 			throw new IllegalArgumentException("You must specify the peer ID when starting a peer process");
 		else
 			myPeerId = Integer.parseInt(args[0]);
-		
+
+		fm = new FileManager();
+
 		System.out.println("Initializing config...");
 		myConfig = new Config();
 		System.out.println("Initializing Peer Info...");
@@ -50,7 +52,6 @@ public class PeerProcess
 		}
 		
 		initLogger();
-		fm = new FileManager();
 		
 		es = Executors.newCachedThreadPool();
 		
