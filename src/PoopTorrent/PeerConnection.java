@@ -71,6 +71,17 @@ public class PeerConnection implements Runnable {
 			}
 		}
 		
+		PeerProcess.log.info("We are sending a bitfield to " + remotePeerInfo.getPeerID());
+		MessageUtils.bitfield(s, PeerProcess.fm.getBitfield().getBitfield());
+		
+		Message remoteBitfieldMsg = MessageUtils.receiveMessage(s);
+		
+		if (remoteBitfieldMsg instanceof NormalMessage)
+		{
+			if (((NormalMessage) remoteBitfieldMsg).getMessageType() == (byte)5)
+				PeerProcess.log.info("We received a bitfield from " + remotePeerInfo.getPeerID());
+		}
+		
 		try {
 			s.close();
 		} catch (IOException e) {
@@ -87,5 +98,9 @@ public class PeerConnection implements Runnable {
 		this.s = s;
 		PeerProcess.connections.add(this);
 		PeerProcess.log.info("Incoming connection received :)");
+	}
+
+	public PeerInfo getRemotePeerInfo() {
+		return remotePeerInfo;
 	}
 }

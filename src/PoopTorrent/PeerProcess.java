@@ -50,6 +50,7 @@ public class PeerProcess
 		}
 		
 		initLogger();
+		fm = new FileManager();
 		
 		es = Executors.newCachedThreadPool();
 		

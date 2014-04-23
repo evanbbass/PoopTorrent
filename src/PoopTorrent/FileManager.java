@@ -52,7 +52,7 @@ public class FileManager
 			byte[] pieceData = new byte[PeerProcess.myConfig.PieceSize];
 			for (int j = 0; j < PeerProcess.myConfig.PieceSize; j++)
 			{
-				pieceData[j] = (i * pieceData.length + j > data.length
+				pieceData[j] = (i * pieceData.length + j >= data.length
 									? (byte)0 : data[i * pieceData.length + j]);
 			}
 			pieces.add(new Piece(pieceData));
