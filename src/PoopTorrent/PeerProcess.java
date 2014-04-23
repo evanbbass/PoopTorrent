@@ -11,6 +11,7 @@ package poopTorrent;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
@@ -99,17 +100,53 @@ public class PeerProcess
 	
 	public static void startTimers() {
 		new java.util.Timer().schedule(
-				new java.util.TimerTask() { 
-					public void run() {
-						PeerProcess.log.info("Choking timer went off");
+			new java.util.TimerTask() { 
+				public void run() {
+					//PeerProcess.log.info("Choking timer went off");
+					
+					// figure out who has uploaded the most to us
+					Collections.sort(connections);
+					
+					for (int i = 0; i < connections.size(); i++) {
+						/*PeerProcess.log.info(i + ": " + connections.get(i).getRemotePeerInfo().getPeerID()
+								+ " has download rate of " + connections.get(i).getRemotePeerInfo().getDownloadRate()
+								+ " pieces");*/
+					}
+					
+					int i;
+					// unchoke the neighbors that have uploaded the most to us
+					for (i = 0; i < connections.size() && i < myConfig.NumberOfPreferredNeighbors; i++) {
+						if (connections.get(i).getRemotePeerInfo().isChoked() &&
+							connections.get(i).getConnectionEstablished() &&
+							connections.get(i).getRemotePeerInfo().isInterested()) {
+							
+							connections.get(i).getRemotePeerInfo().unchoke();
+							connections.get(i).sendUnchoke();
+							
+							log.info("Unchoking peer " + 
+									connections.get(i).getRemotePeerInfo().getPeerID());
+						}
+					}
+					for (; i < connections.size(); i++) {
+						// Choke any neighbors that were previously unchoked 
+						if (!connections.get(i).getRemotePeerInfo().isChoked() &&
+								connections.get(i).getConnectionEstablished()) {
+							
+							connections.get(i).getRemotePeerInfo().choke();
+							connections.get(i).sendChoke();
+							
+							log.info("Choking peer " + 
+									connections.get(i).getRemotePeerInfo().getPeerID());
+						}
 					}
 				}
-				, 0, myConfig.UnchokingInterval*1000);
+			}
+			, 0, myConfig.UnchokingInterval*1000);
 		
 		new java.util.Timer().schedule(
 				new java.util.TimerTask() { 
 					public void run() {
-						PeerProcess.log.info("Optimistic unchoking timer went off");
+						//PeerProcess.log.info("Optimistic unchoking timer went off");
 					}
 				}
 				, 0, myConfig.OptimisticUnchokingInterval*1000);

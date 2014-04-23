@@ -23,7 +23,10 @@ public class FileManager
 		}
 		else
 		{
-			pieces = new ArrayList<Piece>(numPieces);
+			pieces = new ArrayList<Piece>();
+			
+			for (int i = 0; i < numPieces; i++)
+				pieces.add(new Piece());
 		}
 	}
 
@@ -61,8 +64,18 @@ public class FileManager
 	
 	public void receivePiece(int index, byte[] data)
 	{
-		pieces.get(index).setPieceData(data);
-		bitfield.receivePiece(index);
+		synchronized (pieces.get(index)) {
+			pieces.get(index).setPieceData(data);
+			bitfield.receivePiece(index);
+			for (int i = 0; i < PeerProcess.connections.size(); i++) {
+				if (PeerProcess.connections.get(i).getConnectionEstablished()) {
+					PeerProcess.connections.get(i).sendHave(index);
+					synchronized (PeerProcess.connections.get(i).getInterestingPieces()) {
+						PeerProcess.connections.get(i).getInterestingPieces().remove(new Integer(index));
+					}
+				}
+			}
+		}
 	}
 
 
@@ -81,7 +94,16 @@ public class FileManager
 	public Bitfield getBitfield() {
 		return bitfield;
 	}
+	
 	public void setBitfield(Bitfield bitfield) {
 		this.bitfield = bitfield;
+	}
+	
+	public Piece getPiece(int index) {
+		if (index > pieces.size())
+			throw new IllegalArgumentException("Error tried to retrieve a piece at index "
+					+ index + ", which doesn't exist");
+		
+		return pieces.get(index);
 	}
 }

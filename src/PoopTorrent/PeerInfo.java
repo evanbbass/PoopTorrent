@@ -17,7 +17,7 @@ public class PeerInfo
 	private int listeningPort;
 
 	private Bitfield bitfield;
-	private double downloadRate;
+	private Integer downloadRate; // how many pieces we've downloaded from a peer in this unchoking interval
 	private boolean interested;
 	private boolean choked;
 	
@@ -45,7 +45,7 @@ public class PeerInfo
 		this.hostName = hostName;
 		this.listeningPort = listeningPort;
 		this.interested = false;
-		this.downloadRate = 0.0;
+		this.downloadRate = 0;
 		this.bitfield = new Bitfield(PeerProcess.myConfig.FileSize, hasFile);
 		this.choked = true;
 		this.interestedPieces = new ArrayList<Integer>();
@@ -88,12 +88,14 @@ public class PeerInfo
 		return bitfield.isComplete();
 	}
 
-	public double getDownloadRate() {
+	public Integer getDownloadRate() {
 		return downloadRate;
 	}
-	public void setDownloadRate(double downloadRate) {
+	public void setDownloadRate(Integer downloadRate) {
 		this.downloadRate = downloadRate;
 	}
+	
+	
 
 	public boolean isInterested() {
 		return interested;
@@ -106,13 +108,19 @@ public class PeerInfo
 	}
 
 	public boolean isChoked() {
-		return choked;
+		synchronized(this) {
+			return choked;
+		}
 	}
 	public void choke() {
-		this.choked = true;
+		synchronized (this) {
+			this.choked = true;
+		}
 	}
 	public void unchoke() {
-		this.choked = false;
+		synchronized (this) {
+			this.choked = false;
+		}
 	}
 
 	public String toString()

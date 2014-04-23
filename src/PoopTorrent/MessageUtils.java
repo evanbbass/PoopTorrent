@@ -19,17 +19,19 @@ public class MessageUtils
 	{
 		 OutputStream out = null;
 		 
-		 try {
-			out = socket.getOutputStream();
-		 } catch (IOException e) {
-			e.printStackTrace();
-		 }
-		 
-		 DataOutputStream dos = new DataOutputStream(out);
-		 try {
-			dos.write(message.getBytes(), 0, message.getBytes().length);
-		} catch (IOException e) {
-			e.printStackTrace();
+		 synchronized (socket) {
+			 try {
+				out = socket.getOutputStream();
+			 } catch (IOException e) {
+				e.printStackTrace();
+			 }
+			 
+			 DataOutputStream dos = new DataOutputStream(out);
+			 try {
+				dos.write(message.getBytes(), 0, message.getBytes().length);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -40,44 +42,43 @@ public class MessageUtils
 	 */
 	public static Message receiveMessage(Socket s)
 	{
-		try {
-			InputStream in = s.getInputStream();
-		    DataInputStream dis = new DataInputStream(in);
-		    
-		    byte[] header = new byte[5];
-		    dis.readFully(header);
-	
-		    PeerProcess.log.info("header is: " + new String(header));
-		    
-			if ( new String(header).equals("HELLO") )
-			{
-				ByteBuffer buffer = ByteBuffer.allocate(27);
-				dis.readFully(buffer.array());
-				
-				int peerID = buffer.getInt(23);
-	
-				return new HandshakeMessage(peerID);
+		//synchronized (s) {
+			try {
+				InputStream in = s.getInputStream();
+			    DataInputStream dis = new DataInputStream(in);
+			    
+			    byte[] header = new byte[5];
+			    dis.readFully(header);
+			    
+				if ( new String(header).equals("HELLO") )
+				{
+					ByteBuffer buffer = ByteBuffer.allocate(27);
+					dis.readFully(buffer.array());
+					
+					int peerID = buffer.getInt(23);
+		
+					return new HandshakeMessage(peerID);
+				}
+				else
+				{
+					ByteBuffer buffer = ByteBuffer.allocate(5);
+					buffer.put(header);
+					buffer.position(0); // reset position
+					int length = buffer.getInt();
+					byte messageType = buffer.get();
+					
+					// length includes type, so the remaining bytes are length - 1
+					byte[] payload = new byte[length - 1];
+					dis.readFully(payload);
+					
+					return new NormalMessage(messageType, payload);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				PeerProcess.log.info("We had an error receiving a msg");
+				return null;
 			}
-			else
-			{
-				ByteBuffer buffer = ByteBuffer.allocate(5);
-				buffer.put(header);
-				buffer.position(0); // reset position
-				int length = buffer.getInt();
-				byte messageType = buffer.get();
-				
-				// length includes type, so the remaining bytes are length - 1
-				PeerProcess.log.info("We are allocating a buffer of length=" + length);
-				byte[] payload = new byte[length - 1];
-				dis.readFully(payload);
-				
-				return new NormalMessage(messageType, payload);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			PeerProcess.log.info("SHIT GOT FUCKED YO :(");
-			return null;
-		}
+		//}
 	}
 
 	/**
@@ -169,11 +170,28 @@ public class MessageUtils
 	 */
 	public static void request(Socket socket, int index)
 	{
-		ByteBuffer buffer = ByteBuffer.allocate(4);
-		buffer.putInt(index);
-		Message message = new NormalMessage( (byte)6, buffer.array() );
-
-		sendMessage(socket, message);
+		// synchronize our access to the file pieces
+		synchronized(PeerProcess.fm.getPiece(index)) {
+			// check to see if another PeerConnection already requested the file piece
+			if (!PeerProcess.fm.getPiece(index).wasRequested()) {
+				// if it hasn't been requested, let's request it!
+				PeerProcess.fm.getPiece(index).setRequested();
+				
+				// let other threads know that we have requested it by removing from their interesting pieces
+				for (int i = 0; i < PeerProcess.connections.size(); i++){
+					synchronized(PeerProcess.connections.get(i).getInterestingPieces()) {
+						PeerProcess.connections.get(i).getInterestingPieces().remove(new Integer(index));
+					}
+				}
+				
+				ByteBuffer buffer = ByteBuffer.allocate(4);
+				buffer.putInt(index);
+				Message message = new NormalMessage( (byte)6, buffer.array() );
+				
+				// send the request
+				sendMessage(socket, message);
+			}
+		}
 	}
 
 	/**

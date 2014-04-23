@@ -4,6 +4,7 @@ public class Piece
 {
 	private byte[] pieceData;
 	private boolean hasData;
+	private boolean wasRequested = false;
 
 	public Piece()
 	{
@@ -18,6 +19,7 @@ public class Piece
 	}
 
 	public byte[] getPieceData() {
+		
 		if (hasData)
 			return pieceData;
 		else 
@@ -31,5 +33,13 @@ public class Piece
 	
 	public boolean hasData() {
 		return hasData;
+	}
+	
+	public boolean wasRequested() {
+		return wasRequested;
+	}
+	
+	public void setRequested() {
+		wasRequested = true;
 	}
 }

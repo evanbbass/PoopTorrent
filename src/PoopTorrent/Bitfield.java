@@ -35,7 +35,9 @@ public class Bitfield
 	 */
 	public byte[] getBitfield()
 	{
-		return bitfield;
+		synchronized (this) {
+			return bitfield;
+		}
 	}
 
 	/**
