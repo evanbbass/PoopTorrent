@@ -35,17 +35,40 @@ public class PeerConnection implements Runnable {
 			}
 		}
 		
-		// TO-DO: WRITE THE ENTIRE STATE MACHINE FOR THE BIT-TORRENT PROTOCOL (NO BIG DEAL RIGHT???)
-		
 		PeerProcess.log.info("We are sending a handshake");
 		
+		// Send a handshake
 		MessageUtils.handshake(s, PeerProcess.myPeerId);
 		
-		Message handshakeMsg = MessageUtils.recieveMessage(s);
-		
-		if (handshakeMsg instanceof HandshakeMessage) {
-			HandshakeMessage m = (HandshakeMessage)handshakeMsg;
-			PeerProcess.log.info("We received a handshake message from " + m.getPeerID());
+		// wait until we receive one 
+		for (;;) {
+			Message handshakeMsg = MessageUtils.recieveMessage(s);
+			
+			if (handshakeMsg instanceof HandshakeMessage) {
+				HandshakeMessage m = (HandshakeMessage)handshakeMsg;
+				PeerProcess.log.info("We received a handshake message from " + m.getPeerID());
+				
+				// if we made the outbound connection and we knew who our peer was
+				// we expect their peerID to be the one we have on record
+				if (remotePeerInfo != null) {
+					if (remotePeerInfo.getPeerID() == m.getPeerID())
+						PeerProcess.log.info("We were expecting a message from " + m.getPeerID());
+					else {
+						PeerProcess.log.info("We were not expecting a handshake message from " + m.getPeerID());
+						continue;
+					}
+				} else { 
+					// figure out who the remote peer is based on the peer ID we received
+					for (int i = 0; i < PeerProcess.peers.getPeers().size(); i++) {
+						if (PeerProcess.peers.getPeers().get(i).getPeerID() == m.getPeerID()) {
+							remotePeerInfo = PeerProcess.peers.getPeers().get(i);
+						}
+					}
+				}
+				break;
+			} else {
+				PeerProcess.log.info("We were expecting a handshake but received something else");
+			}
 		}
 		
 		try {

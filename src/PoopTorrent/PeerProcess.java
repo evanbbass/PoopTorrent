@@ -32,16 +32,11 @@ public class PeerProcess
 		System.out.println("Welcome to PoopTorrent! W00t!");
 		
 		connections = new ArrayList<PeerConnection>();
+		
 		if (args.length != 1)
 			throw new IllegalArgumentException("You must specify the peer ID when starting a peer process");
 		else
 			myPeerId = Integer.parseInt(args[0]);
-		
-		// Testing Messages
-//		Message message = new HandshakeMessage(1001);
-//		message.getBytes();
-//		message = new NormalMessage((byte)0, "asdfj".getBytes());
-//		message.getBytes();
 		
 		System.out.println("Initializing config...");
 		myConfig = new Config();
@@ -66,7 +61,7 @@ public class PeerProcess
 				es.execute(new PeerConnection(peers.getPeers().get(i)));
 		}
 		
-		//es.shutdown(); // PeerListener never terminates, so this should never finish
+		// es.shutdownNow() once all peers have received the file ...
 	}
 	
 	public static void initLogger() {
