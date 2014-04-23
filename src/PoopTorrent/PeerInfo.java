@@ -14,7 +14,7 @@ public class PeerInfo
 	private String hostName;
 	private int listeningPort;
 
-	private FileBits bitfield;
+	private Bitfield bitfield;
 	private double downloadRate;
 	private boolean interested;
 	private boolean choked;
@@ -42,7 +42,7 @@ public class PeerInfo
 		this.listeningPort = listeningPort;
 		this.interested = false;
 		this.downloadRate = 0.0;
-		this.bitfield = new FileBits(PeerProcess.myConfig.FileSize, hasFile);
+		this.bitfield = new Bitfield(PeerProcess.myConfig.FileSize, hasFile);
 		this.choked = true;
 	}
 
@@ -73,10 +73,10 @@ public class PeerInfo
 		this.listeningPort = listeningPort;
 	}
 
-	public FileBits getBitfield() {
+	public Bitfield getBitfield() {
 		return bitfield;
 	}
-	public void setBitfield(FileBits bitfield) {
+	public void setBitfield(Bitfield bitfield) {
 		this.bitfield = bitfield;
 	}
 	public boolean hasFile() {

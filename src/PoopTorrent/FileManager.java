@@ -2,15 +2,22 @@ package poopTorrent;
 
 import java.util.ArrayList;
 
-public class SeededFile
+public class FileManager
 {
 	private ArrayList<Piece> pieces;
 	
-	public SeededFile(String filepath)
+	public FileManager(String filepath)
 	{
 		pieces = new ArrayList<Piece>();
 		
 		
+	}
+
+	public Bitfield getBitfield()
+	{
+		
+
+		return null;
 	}
 
 	public ArrayList<Piece> getPieces() {

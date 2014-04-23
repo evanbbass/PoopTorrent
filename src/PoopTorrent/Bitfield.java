@@ -8,18 +8,18 @@ package poopTorrent;
  * Contains a byte array 
  */
 
-public class FileBits
+public class Bitfield
 {
 	private byte[] bitfield;
 	private int numBits;
 	//private boolean complete;
 
-	public FileBits(int numBits)
+	public Bitfield(int numBits)
 	{
 		this(numBits, false);
 	}
 
-	public FileBits(int numBits, boolean hasFile)
+	public Bitfield(int numBits, boolean hasFile)
 	{
 		createBitfield(numBits, hasFile);
 		this.numBits = numBits;
