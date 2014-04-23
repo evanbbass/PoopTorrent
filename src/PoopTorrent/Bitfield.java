@@ -87,7 +87,7 @@ public class Bitfield
 	 */
 	private void createBitfield(int size, boolean hasFile)
 	{
-		bitfield = new byte[size + 1];
+		bitfield = new byte[size];
 		
 		for(int i = 0; i < bitfield.length; i++)
 		{

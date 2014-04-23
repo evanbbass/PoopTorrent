@@ -26,6 +26,7 @@ public class PeerProcess
 	static int myPeerId;
 	static ExecutorService es;
 	static ArrayList<PeerConnection> connections;
+	static FileManager fm;
 
 	public static void main(String[] args)
 	{
