@@ -1,5 +1,7 @@
 package poopTorrent;
 
+import java.util.ArrayList;
+
 /**
  * @author Derek Poirier
  * @author Evan Bass
@@ -97,5 +99,17 @@ public class Bitfield
 
 	public void receivePiece(int index) {
 		bitfield[index] = (byte)1;
+	}
+
+	public ArrayList<Integer> compareTo(byte[] bitfield2) {
+		ArrayList<Integer> interestedPieces = new ArrayList<Integer>();
+
+		for (int i = 0; i < bitfield2.length; i++)
+		{
+			if ((bitfield[i] == (byte)0) && (bitfield2[i] == (byte)1))
+					interestedPieces.add(i);
+		}
+
+		return interestedPieces;
 	}
 }

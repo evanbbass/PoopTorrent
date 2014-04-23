@@ -48,7 +48,7 @@ public class PeerInfo
 		this.downloadRate = 0.0;
 		this.bitfield = new Bitfield(PeerProcess.myConfig.FileSize, hasFile);
 		this.choked = true;
-		interestedPieces = new ArrayList<Integer>();
+		this.interestedPieces = PeerProcess.fm.getBitfield().compareTo(bitfield.getBitfield());
 	}
 
 	public int getPeerID()
