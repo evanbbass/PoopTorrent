@@ -63,6 +63,7 @@ public class PeerProcess
 				es.execute(new PeerConnection(peers.getPeers().get(i)));
 		}
 		
+		startTimers();
 		// es.shutdownNow() once all peers have received the file ...
 	}
 	
@@ -94,5 +95,23 @@ public class PeerProcess
 
 //		log.info("Config file:\n" + myConfig.toString());
 //		log.info("Peer Info:\n" + peers.toString());
+	}
+	
+	public static void startTimers() {
+		new java.util.Timer().schedule(
+				new java.util.TimerTask() { 
+					public void run() {
+						PeerProcess.log.info("Choking timer went off");
+					}
+				}
+				, 0, myConfig.UnchokingInterval*1000);
+		
+		new java.util.Timer().schedule(
+				new java.util.TimerTask() { 
+					public void run() {
+						PeerProcess.log.info("Optimistic unchoking timer went off");
+					}
+				}
+				, 0, myConfig.OptimisticUnchokingInterval*1000);
 	}
 }

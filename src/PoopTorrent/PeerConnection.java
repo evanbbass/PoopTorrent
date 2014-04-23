@@ -3,11 +3,13 @@ package poopTorrent;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class PeerConnection implements Runnable {
 	private PeerInfo remotePeerInfo = null;
 	private Socket s = null;
-	
+	private ArrayList<Integer> interestingPieces = new ArrayList<Integer>();
+
 	public void run() {
 		
 		// if we know who to connect to and we haven't connected yet, then connect now
@@ -82,6 +84,31 @@ public class PeerConnection implements Runnable {
 				PeerProcess.log.info("We received a bitfield from " + remotePeerInfo.getPeerID());
 		} 
 		
+		// interestingPieces is a list of indices of pieces that we are interested in from remote peer
+		interestingPieces = PeerProcess.fm.getBitfield().compareTo(
+				remotePeerInfo.getBitfield().getBitfield());
+		
+		if (interestingPieces.size() > 0) {
+			MessageUtils.interested(s);
+		} else {
+			MessageUtils.notInterested(s);
+		}
+		
+		Message doesHeLikeMe = MessageUtils.receiveMessage(s);
+		
+		if (doesHeLikeMe instanceof NormalMessage) {
+			// If the remote peer is interested
+			if (((NormalMessage) doesHeLikeMe).getMessageType() == (byte)2) {
+				remotePeerInfo.interested(); // set remotePeerInfo to show they are interested
+			} else if (((NormalMessage) doesHeLikeMe).getMessageType() == (byte)3) {
+				// if remote peer is not interested
+				remotePeerInfo.notInterested();
+			} else {
+				PeerProcess.log.info("Peer " + remotePeerInfo.getPeerID() + " did not say whether or not" +
+						" they were interested in me :(");
+			}
+		} 
+		
 		try {
 			s.close();
 		} catch (IOException e) {
@@ -103,4 +130,9 @@ public class PeerConnection implements Runnable {
 	public PeerInfo getRemotePeerInfo() {
 		return remotePeerInfo;
 	}
+	
+	public ArrayList<Integer> getInterestingPieces() {
+		return interestingPieces;
+	}
+
 }
