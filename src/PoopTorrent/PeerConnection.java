@@ -37,7 +37,7 @@ public class PeerConnection implements Runnable {
 			}
 		}
 		
-		PeerProcess.log.info("We are sending a handshake");
+		PeerProcess.log.info("Sending a handshake");
 		
 		// Send a handshake
 		MessageUtils.handshake(s, PeerProcess.myPeerId);
@@ -48,7 +48,7 @@ public class PeerConnection implements Runnable {
 			
 			if (handshakeMsg instanceof HandshakeMessage) {
 				HandshakeMessage m = (HandshakeMessage)handshakeMsg;
-				PeerProcess.log.info("We received a handshake message from " + m.getPeerID());
+				PeerProcess.log.info("Received a handshake message from " + m.getPeerID());
 				
 				// if we made the outbound connection and we knew who our peer was
 				// we expect their peerID to be the one we have on record
@@ -69,19 +69,21 @@ public class PeerConnection implements Runnable {
 				}
 				break;
 			} else {
-				PeerProcess.log.info("We were expecting a handshake but received something else");
+				PeerProcess.log.info("Expecting a handshake but received something else");
 			}
 		}
 		
-		PeerProcess.log.info("We are sending a bitfield to " + remotePeerInfo.getPeerID());
+		PeerProcess.log.info("Sending a bitfield to " + remotePeerInfo.getPeerID());
 		MessageUtils.bitfield(s, PeerProcess.fm.getBitfield().getBitfield());
 		
 		Message remoteBitfieldMsg = MessageUtils.receiveMessage(s);
 		
 		if (remoteBitfieldMsg instanceof NormalMessage)
 		{
-			if (((NormalMessage) remoteBitfieldMsg).getMessageType() == (byte)5)
-				PeerProcess.log.info("We received a bitfield from " + remotePeerInfo.getPeerID());
+			if (((NormalMessage) remoteBitfieldMsg).getMessageType() == (byte)5) {
+				PeerProcess.log.info("Received a bitfield from " + remotePeerInfo.getPeerID());
+				remotePeerInfo.getBitfield().setBitfield(((NormalMessage) remoteBitfieldMsg).getMessagePayload());
+			}
 		} 
 		
 		// interestingPieces is a list of indices of pieces that we are interested in from remote peer
@@ -89,8 +91,10 @@ public class PeerConnection implements Runnable {
 				remotePeerInfo.getBitfield().getBitfield());
 		
 		if (interestingPieces.size() > 0) {
+			PeerProcess.log.info("Sending an interested message to " + remotePeerInfo.getPeerID());
 			MessageUtils.interested(s);
 		} else {
+			PeerProcess.log.info("Sending a NOT interested message to " + remotePeerInfo.getPeerID());
 			MessageUtils.notInterested(s);
 		}
 		
@@ -100,9 +104,11 @@ public class PeerConnection implements Runnable {
 			// If the remote peer is interested
 			if (((NormalMessage) doesHeLikeMe).getMessageType() == (byte)2) {
 				remotePeerInfo.interested(); // set remotePeerInfo to show they are interested
+				PeerProcess.log.info("Peer " + remotePeerInfo.getPeerID() + " is interested in us <3");
 			} else if (((NormalMessage) doesHeLikeMe).getMessageType() == (byte)3) {
 				// if remote peer is not interested
 				remotePeerInfo.notInterested();
+				PeerProcess.log.info("Peer " + remotePeerInfo.getPeerID() + " is not interested in us :(");
 			} else {
 				PeerProcess.log.info("Peer " + remotePeerInfo.getPeerID() + " did not say whether or not" +
 						" they were interested in me :(");
