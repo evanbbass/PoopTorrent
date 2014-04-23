@@ -1,5 +1,7 @@
 package poopTorrent;
 
+import java.util.ArrayList;
+
 /**
  * @author Derek Poirier
  * @author Evan Bass
@@ -18,6 +20,8 @@ public class PeerInfo
 	private double downloadRate;
 	private boolean interested;
 	private boolean choked;
+	
+	ArrayList<Integer> interestedPieces;
 
 	/**
 	 * Default constructor for PeerInfo. Sets everything to 
@@ -44,6 +48,7 @@ public class PeerInfo
 		this.downloadRate = 0.0;
 		this.bitfield = new Bitfield(PeerProcess.myConfig.FileSize, hasFile);
 		this.choked = true;
+		interestedPieces = new ArrayList<Integer>();
 	}
 
 	public int getPeerID()

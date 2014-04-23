@@ -80,7 +80,7 @@ public class PeerConnection implements Runnable {
 		{
 			if (((NormalMessage) remoteBitfieldMsg).getMessageType() == (byte)5)
 				PeerProcess.log.info("We received a bitfield from " + remotePeerInfo.getPeerID());
-		}
+		} 
 		
 		try {
 			s.close();
