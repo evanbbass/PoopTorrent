@@ -94,4 +94,8 @@ public class Bitfield
 			bitfield[i] = (byte) (hasFile ? 1 : 0);
 		}
 	}
+
+	public void receivePiece(int index) {
+		bitfield[index] = (byte)1;
+	}
 }
