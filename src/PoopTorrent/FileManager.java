@@ -58,7 +58,18 @@ public class FileManager
 			pieces.add(new Piece(pieceData));
 		}
 	}
+	
+	public void receivePiece(int index, byte[] data)
+	{
+		pieces.get(index).setPieceData(data);
+		bitfield.receivePiece(index);
+	}
 
+
+	public boolean isComplete()
+	{
+		return bitfield.isComplete();
+	}
 
 	public ArrayList<Piece> getPieces() {
 		return pieces;
