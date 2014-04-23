@@ -42,7 +42,7 @@ public class PeerConnection implements Runnable {
 		
 		// wait until we receive one 
 		for (;;) {
-			Message handshakeMsg = MessageUtils.recieveMessage(s);
+			Message handshakeMsg = MessageUtils.receiveMessage(s);
 			
 			if (handshakeMsg instanceof HandshakeMessage) {
 				HandshakeMessage m = (HandshakeMessage)handshakeMsg;

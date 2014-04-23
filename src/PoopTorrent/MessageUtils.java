@@ -38,7 +38,7 @@ public class MessageUtils
 	 * @param messageData The byte array received
 	 * @return The generated message
 	 */
-	public static Message recieveMessage(Socket s)
+	public static Message receiveMessage(Socket s)
 	{
 		try {
 			InputStream in = s.getInputStream();
