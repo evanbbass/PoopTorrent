@@ -277,13 +277,15 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 				// if we received an interested message
 				if (msg.getMessageType() == (byte)2) {
 					remotePeerInfo.interested();
-					PeerProcess.log.info("We received an interested from " + remotePeerInfo.getPeerID());
+					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
+							" received an interested message from " + remotePeerInfo.getPeerID());
 				}
 				
 				// if we received a not-interested message
 				if (msg.getMessageType() == (byte)3) {
 					remotePeerInfo.notInterested();
-					PeerProcess.log.info("We received a not interested msg from " + remotePeerInfo.getPeerID());
+					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
+							" received a not interested message from " + remotePeerInfo.getPeerID());
 				}
 				
 				// if we received a have message

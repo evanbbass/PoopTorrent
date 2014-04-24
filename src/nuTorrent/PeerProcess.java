@@ -140,9 +140,10 @@ public class PeerProcess
 						}
 					}
 					
+					
 					String result = "";
 					for (int j = 0; j < connections.size(); j++) {
-						result += connections.get(i).getRemotePeerInfo().getPeerID();
+						result += connections.get(j).getRemotePeerInfo().getPeerID();
 						result += ", ";
 					}
 					log.info("Peer " + myPeerId + " has the preferred neighbors " + result);
