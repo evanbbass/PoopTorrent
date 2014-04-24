@@ -116,8 +116,8 @@ public class PeerProcess
 					int i;
 					// unchoke the neighbors that have uploaded the most to us
 					for (i = 0; i < connections.size() && i < myConfig.NumberOfPreferredNeighbors; i++) {
-						if (connections.get(i).getRemotePeerInfo().isChoked() &&
-							connections.get(i).getConnectionEstablished() &&
+						if (connections.get(i).getConnectionEstablished() &&
+							connections.get(i).getRemotePeerInfo().isChoked() &&
 							connections.get(i).getRemotePeerInfo().isInterested()) {
 							
 							connections.get(i).getRemotePeerInfo().unchoke();
@@ -129,8 +129,8 @@ public class PeerProcess
 					}
 					for (; i < connections.size(); i++) {
 						// Choke any neighbors that were previously unchoked 
-						if (!connections.get(i).getRemotePeerInfo().isChoked() &&
-								connections.get(i).getConnectionEstablished()) {
+						if (connections.get(i).getConnectionEstablished() &&
+							!connections.get(i).getRemotePeerInfo().isChoked() ) {
 							
 							connections.get(i).getRemotePeerInfo().choke();
 							connections.get(i).sendChoke();

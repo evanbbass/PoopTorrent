@@ -19,7 +19,7 @@ public class MessageUtils
 	{
 		 OutputStream out = null;
 		 
-		 synchronized (socket) {
+		 //synchronized (socket) {
 			 try {
 				out = socket.getOutputStream();
 			 } catch (IOException e) {
@@ -32,7 +32,7 @@ public class MessageUtils
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		//}
 	}
 
 	/**
