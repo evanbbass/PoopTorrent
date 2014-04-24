@@ -372,7 +372,11 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 					
 					//remotePeerInfo.setDownloadRate(downloadRate)
 					
-					PeerProcess.log.info("Received piece " + index + " from " + remotePeerInfo.getPeerID());
+					PeerProcess.fm.incrementNumPiecesDownloaded();
+					
+					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " has downloaded the piece "
+							+ index + " from " + remotePeerInfo.getPeerID() + ". Now the number of pieces it has is " 
+							+ PeerProcess.fm.getNumPiecesDownloaded());
 				}
 				
 				if (programFinished)

@@ -8,6 +8,7 @@ public class FileManager
 {
 	private ArrayList<Piece> pieces;
 	private Bitfield bitfield;
+	private Integer numPiecesDownloaded = 0;
 	
 	public FileManager()
 	{
@@ -105,5 +106,13 @@ public class FileManager
 					+ index + ", which doesn't exist");
 		
 		return pieces.get(index);
+	}
+	
+	public void incrementNumPiecesDownloaded() {
+		numPiecesDownloaded++;
+	}
+	
+	public Integer getNumPiecesDownloaded() {
+		return numPiecesDownloaded++;
 	}
 }
