@@ -289,7 +289,7 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 				
 				PeerProcess.fm.receivePiece(index, data);
 				
-				//remotePeerInfo.setDownloadRate(downloadRate)
+				remotePeerInfo.setDownloadRate(remotePeerInfo.getDownloadRate() + 1);
 				
 				PeerProcess.fm.incrementNumPiecesDownloaded();
 				

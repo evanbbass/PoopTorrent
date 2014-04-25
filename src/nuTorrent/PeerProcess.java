@@ -142,7 +142,10 @@ public class PeerProcess
 						}
 					}
 					
-					
+					for (int j = 0; j < connections.size(); j++) {
+						if (connections.get(j).getConnectionEstablished())
+							connections.get(j).getRemotePeerInfo().setDownloadRate(0);
+					}
 					String result = "";
 					for (int j = 0; j < connections.size(); j++) {
 						result += connections.get(j).getRemotePeerInfo().getPeerID();
