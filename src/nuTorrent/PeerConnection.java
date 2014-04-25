@@ -273,7 +273,7 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 				}
 			}
 			
-			// if we received a piece message
+			// if we received a piece message.
 			if (msg.getMessageType() == (byte)7) {
 				byte[] pay = msg.getMessagePayload();
 				
