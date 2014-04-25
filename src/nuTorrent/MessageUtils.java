@@ -17,11 +17,13 @@ public class MessageUtils
 	 */
 	private static void sendMessage(DataOutputStream dos, Message message)
 	{
-		try {
-			dos.write(message.getBytes(), 0, message.getBytes().length);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		synchronized(dos) {
+			try {
+				dos.write(message.getBytes(), 0, message.getBytes().length);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -32,7 +34,7 @@ public class MessageUtils
 	 */
 	public static Message receiveMessage(DataInputStream dis)
 	{
-		//synchronized (s) {
+		synchronized (dis) {
 			try {
 			    byte[] header = new byte[5];
 			    dis.readFully(header);
@@ -65,7 +67,7 @@ public class MessageUtils
 				PeerProcess.log.info("We had an error receiving a msg");
 				return null;
 			}
-		//}
+		}
 	}
 
 	/**
@@ -158,7 +160,7 @@ public class MessageUtils
 	public static void request(DataOutputStream dos, int index)
 	{
 		// synchronize our access to the file pieces
-		//synchronized(PeerProcess.fm.getPiece(index)) {
+		synchronized(PeerProcess.fm.getPiece(index)) {
 			// check to see if another PeerConnection already requested the file piece
 			if (!PeerProcess.fm.getPiece(index).wasRequested()) {
 				// if it hasn't been requested, let's request it!
@@ -166,9 +168,9 @@ public class MessageUtils
 				
 				// let other threads know that we have requested it by removing from their interesting pieces
 				for (int i = 0; i < PeerProcess.connections.size(); i++){
-					//synchronized(PeerProcess.connections.get(i).getInterestingPieces()) {
+					synchronized(PeerProcess.connections.get(i).getInterestingPieces()) {
 						PeerProcess.connections.get(i).getInterestingPieces().remove(new Integer(index));
-					//}
+					}
 				}
 				
 				ByteBuffer buffer = ByteBuffer.allocate(4);
@@ -178,7 +180,7 @@ public class MessageUtils
 				// send the request
 				sendMessage(dos, message);
 			}
-		//}
+		}
 	}
 
 	/**

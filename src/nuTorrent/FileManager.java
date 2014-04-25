@@ -65,18 +65,18 @@ public class FileManager
 	
 	public void receivePiece(int index, byte[] data)
 	{
-		//synchronized (pieces.get(index)) {
+		synchronized (pieces.get(index)) {
 			pieces.get(index).setPieceData(data);
 			bitfield.receivePiece(index);
 			for (int i = 0; i < PeerProcess.connections.size(); i++) {
 				if (PeerProcess.connections.get(i).getConnectionEstablished()) {
 					PeerProcess.connections.get(i).sendHave(index);
-					//synchronized (PeerProcess.connections.get(i).getInterestingPieces()) {
+					synchronized (PeerProcess.connections.get(i).getInterestingPieces()) {
 						PeerProcess.connections.get(i).getInterestingPieces().remove(new Integer(index));
-					//}
+					}
 				}
 			}
-		//}
+		}
 	}
 
 
@@ -113,6 +113,6 @@ public class FileManager
 	}
 	
 	public Integer getNumPiecesDownloaded() {
-		return numPiecesDownloaded++;
+		return numPiecesDownloaded;
 	}
 }

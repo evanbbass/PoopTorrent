@@ -30,7 +30,7 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 	public void run() {
 		
 		// if we know who to connect to and we haven't connected yet, then connect now
-		if (remotePeerInfo != null && s == null) { 
+		if (s == null) { 
 			for (;;) {
 				try {
 					s = new Socket(remotePeerInfo.getHostName(), remotePeerInfo.getListeningPort());
@@ -56,7 +56,6 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 				try {
 					in = s.getInputStream();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			    dis = new DataInputStream(in);
@@ -115,7 +114,7 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 		} 
 		
 		// interestingPieces is a list of indices of pieces that we are interested in from remote peer
-		//synchronized (interestingPieces) {
+		synchronized (interestingPieces) {
 			//synchronized (PeerProcess.fm.getBitfield()) {
 				interestingPieces = PeerProcess.fm.getBitfield().compareTo(
 					remotePeerInfo.getBitfield().getBitfield());
@@ -128,7 +127,7 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 					MessageUtils.notInterested(dos);
 				}
 			//}
-		//}
+		}
 		
 		Message doesHeLikeMe = MessageUtils.receiveMessage(dis);
 		
@@ -148,26 +147,160 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 		} 
 		
 		connectionEstablished = true;
-		Listener l = new Listener(this);
-		l.start();
+		
+		boolean requestedFirstPiece = false;
+		long startTime = System.currentTimeMillis();
 		
 		for (;;) {
-			//synchronized (interestingPieces) {
-				// if the remote Peer has interesting pieces and we are not choked by them, request them
-				if (interestingPieces.size() > 0 && !areWeChoked) {
-					Random r = new Random();
-					int requestedPieceIndex = Math.abs(r.nextInt()) % interestingPieces.size();
-					PeerProcess.log.info("Requesting piece " + interestingPieces.get(requestedPieceIndex) + " from peer " 
-							+ remotePeerInfo.getPeerID());
-					MessageUtils.request(dos, interestingPieces.get(requestedPieceIndex));
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+//			if (System.currentTimeMillis() - startTime > 2000L || !requestedFirstPiece) {
+//				if (!requestedFirstPiece)
+//					requestedFirstPiece = true;
+//				startTime = System.currentTimeMillis();
+//				
+				synchronized (interestingPieces) {
+					// if the remote Peer has interesting pieces and we are not choked by them, request them
+					if (interestingPieces.size() > 0 && !areWeChoked) {
+						Random r = new Random();
+						int requestedPieceIndex = Math.abs(r.nextInt()) % interestingPieces.size();
+						PeerProcess.log.info("Requesting piece " + interestingPieces.get(requestedPieceIndex) + " from peer " 
+								+ remotePeerInfo.getPeerID());
+						MessageUtils.request(dos, interestingPieces.get(requestedPieceIndex));
+						try {
+							Thread.sleep(250);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
-			//}
+//			}
+				
+			Message incomingMsg = MessageUtils.receiveMessage(dis);
+			NormalMessage msg = null;
+			if (incomingMsg instanceof NormalMessage) 
+				msg = (NormalMessage) incomingMsg;
+			
+			// if we received a choke message
+			if (msg.getMessageType() == (byte)0) {
+				areWeChoked = true;
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " is choked by " 
+						+ remotePeerInfo.getPeerID());
+			}
+			
+			// if we received an unchoke message
+			if (msg.getMessageType() == (byte)1) {
+				areWeChoked = false;
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " is unchoked by " 
+						+ remotePeerInfo.getPeerID());
+			}
+			
+			// if we received an interested message
+			if (msg.getMessageType() == (byte)2) {
+				remotePeerInfo.interested();
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
+						" received an interested message from " + remotePeerInfo.getPeerID());
+			}
+			
+			// if we received a not-interested message
+			if (msg.getMessageType() == (byte)3) {
+				remotePeerInfo.notInterested();
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
+						" received a not interested message from " + remotePeerInfo.getPeerID());
+			}
+			
+			// if we received a have message
+			if (msg.getMessageType() == (byte)4) {
+				byte[] pay = msg.getMessagePayload();
+				
+				ByteBuffer buf = ByteBuffer.allocate(4);
+				buf.put(pay);
+				buf.position(0);
+				
+				int index = buf.getInt();
+				// mark that the remote peer has that piece
+				remotePeerInfo.getBitfield().receivePiece(index);
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " received a have message from " + 
+						remotePeerInfo.getPeerID() + " for the piece " + index);
+						
+				
+				// we should see if we are now interested in remote peer if we weren't already
+				synchronized(interestingPieces) {
+					interestingPieces = PeerProcess.fm.getBitfield().compareTo(
+						remotePeerInfo.getBitfield().getBitfield());
+
+					boolean wereWeInterested = remotePeerInfo.isInterested();
+					
+					if (interestingPieces.size() > 0) {
+						remotePeerInfo.interested(); // we are interested in remote peer
+						if (!wereWeInterested)
+							MessageUtils.interested(dos); // let them know we're interested!
+					} else {
+						remotePeerInfo.notInterested(); // we aren't interested in remote peer
+						if (wereWeInterested)
+							MessageUtils.notInterested(dos); // let them take the hint :P
+					}
+				}
+			}
+			
+			// if we received a request message
+			if (msg.getMessageType() == (byte)6) {
+				// if we can upload to the remote peer
+				if (!remotePeerInfo.isChoked()) {
+					// figure out which piece they want 
+					byte[] pay = msg.getMessagePayload();
+					
+					ByteBuffer buf = ByteBuffer.allocate(4);
+					buf.put(pay);
+					buf.position(0);
+					
+					int index = buf.getInt();
+					
+					// if we have that piece
+					if (PeerProcess.fm.getBitfield().getBitfield()[index] == 1) {
+						PeerProcess.log.info("We received a request for piece " + index + " from peer "
+								+ remotePeerInfo.getPeerID() + " and are sending it.");
+						
+						// send it to the remote peer
+						
+						byte[] data = PeerProcess.fm.getPieces().get(index).getPieceData();
+						MessageUtils.piece(dos, index, data);
+					} else {
+						PeerProcess.log.info("Error: peer " + remotePeerInfo.getPeerID() + 
+								" requested piece " + index + " which we don't have.");
+					}
+				} else {
+					PeerProcess.log.info("Error: we received a request message from " + 
+							remotePeerInfo.getPeerID() + " but they were choked");	
+				}
+			}
+			
+			// if we received a piece message
+			if (msg.getMessageType() == (byte)7) {
+				byte[] pay = msg.getMessagePayload();
+				
+				ByteBuffer buf = ByteBuffer.allocate(pay.length);
+				buf.put(pay);
+				buf.position(0);
+				
+				int index = buf.getInt();
+				byte[] data = new byte[pay.length - 4];
+				for (int i = 0; i < pay.length - 4; i++) {
+					data[i] = buf.get();
+				}
+				
+				PeerProcess.fm.receivePiece(index, data);
+				
+				//remotePeerInfo.setDownloadRate(downloadRate)
+				
+				PeerProcess.fm.incrementNumPiecesDownloaded();
+				
+				if (PeerProcess.fm.getBitfield().isComplete()) {
+					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " has downloaded the complete file.");
+				}
+				
+				PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " has downloaded the piece "
+						+ index + " from " + remotePeerInfo.getPeerID() + ". Now the number of pieces it has is " 
+						+ PeerProcess.fm.getNumPiecesDownloaded());
+			}
 			
 			if (programFinished)
 				break;
@@ -201,7 +334,6 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 		try {
 			in = s.getInputStream();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -248,145 +380,5 @@ public class PeerConnection implements Runnable, Comparable<PeerConnection> {
 
 	public void sendHave(int index) {
 		MessageUtils.have(dos, index);
-	}
-	
-	public class Listener extends Thread {
-		PeerConnection pc;
-		
-		public void run() {
-			for (;;) {
-				Message incomingMsg = MessageUtils.receiveMessage(dis);
-				NormalMessage msg = null;
-				if (incomingMsg instanceof NormalMessage) 
-					msg = (NormalMessage) incomingMsg;
-				
-				// if we received a choke message
-				if (msg.getMessageType() == (byte)0) {
-					areWeChoked = true;
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " is choked by " 
-							+ remotePeerInfo.getPeerID());
-				}
-				
-				// if we received an unchoke message
-				if (msg.getMessageType() == (byte)1) {
-					areWeChoked = false;
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " is unchoked by " 
-							+ remotePeerInfo.getPeerID());
-				}
-				
-				// if we received an interested message
-				if (msg.getMessageType() == (byte)2) {
-					remotePeerInfo.interested();
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
-							" received an interested message from " + remotePeerInfo.getPeerID());
-				}
-				
-				// if we received a not-interested message
-				if (msg.getMessageType() == (byte)3) {
-					remotePeerInfo.notInterested();
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + 
-							" received a not interested message from " + remotePeerInfo.getPeerID());
-				}
-				
-				// if we received a have message
-				if (msg.getMessageType() == (byte)4) {
-					byte[] pay = msg.getMessagePayload();
-					
-					ByteBuffer buf = ByteBuffer.allocate(4);
-					buf.put(pay);
-					buf.position(0);
-					
-					int index = buf.getInt();
-					// mark that the remote peer has that piece
-					remotePeerInfo.getBitfield().receivePiece(index);
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " received a have message from " + 
-							remotePeerInfo.getPeerID() + " for the piece " + index);
-							
-					
-					// we should see if we are now interested in remote peer if we weren't already
-					//synchronized(interestingPieces) {
-						interestingPieces = PeerProcess.fm.getBitfield().compareTo(
-							remotePeerInfo.getBitfield().getBitfield());
-	
-						boolean wereWeInterested = remotePeerInfo.isInterested();
-						
-						if (interestingPieces.size() > 0) {
-							remotePeerInfo.interested(); // we are interested in remote peer
-							if (!wereWeInterested)
-								MessageUtils.interested(dos); // let them know we're interested!
-						} else {
-							remotePeerInfo.notInterested(); // we aren't interested in remote peer
-							if (wereWeInterested)
-								MessageUtils.notInterested(dos); // let them take the hint :P
-						}
-					//}
-				}
-				
-				// if we received a request message
-				if (msg.getMessageType() == (byte)6) {
-					// if we can upload to the remote peer
-					if (!remotePeerInfo.isChoked()) {
-						// figure out which piece they want 
-						byte[] pay = msg.getMessagePayload();
-						
-						ByteBuffer buf = ByteBuffer.allocate(4);
-						buf.put(pay);
-						buf.position(0);
-						
-						int index = buf.getInt();
-						
-						// if we have that piece
-						if (PeerProcess.fm.getBitfield().getBitfield()[index] == 1) {
-							PeerProcess.log.info("We received a request for piece " + index + " from peer "
-									+ remotePeerInfo.getPeerID() + " and are sending it.");
-							
-							// send it to the remote peer
-							
-							byte[] data = PeerProcess.fm.getPieces().get(index).getPieceData();
-							MessageUtils.piece(dos, index, data);
-						} else {
-							PeerProcess.log.info("Error: peer " + remotePeerInfo.getPeerID() + 
-									" requested piece " + index + " which we don't have.");
-						}
-					} else {
-						PeerProcess.log.info("Error: we received a request message from " + 
-								remotePeerInfo.getPeerID() + " but they were choked");	
-					}
-				}
-				
-				// if we received a piece message
-				if (msg.getMessageType() == (byte)7) {
-					byte[] pay = msg.getMessagePayload();
-					
-					ByteBuffer buf = ByteBuffer.allocate(pay.length);
-					buf.put(pay);
-					buf.position(0);
-					
-					int index = buf.getInt();
-					byte[] data = new byte[pay.length - 4];
-					for (int i = 0; i < pay.length - 4; i++) {
-						data[i] = buf.get();
-					}
-					
-					PeerProcess.fm.receivePiece(index, data);
-					
-					//remotePeerInfo.setDownloadRate(downloadRate)
-					
-					PeerProcess.fm.incrementNumPiecesDownloaded();
-					
-					PeerProcess.log.info("Peer " + PeerProcess.myPeerId + " has downloaded the piece "
-							+ index + " from " + remotePeerInfo.getPeerID() + ". Now the number of pieces it has is " 
-							+ PeerProcess.fm.getNumPiecesDownloaded());
-				}
-				
-				if (programFinished)
-					return;
-			}
-		}
-		
-		public Listener(PeerConnection pc) {
-			super();
-			this.pc = pc;
-		}
 	}
 }

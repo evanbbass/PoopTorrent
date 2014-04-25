@@ -28,6 +28,7 @@ public class PeerProcess
 	static ExecutorService es;
 	static ArrayList<PeerConnection> connections;
 	static FileManager fm;
+	static boolean shouldSuicide = false; 
 
 	public static void main(String[] args)
 	{
@@ -102,7 +103,8 @@ public class PeerProcess
 		new java.util.Timer().schedule(
 			new java.util.TimerTask() { 
 				public void run() {
-					//PeerProcess.log.info("Choking timer went off");
+					if (shouldSuicide)
+						this.cancel();
 					
 					// figure out who has uploaded the most to us
 					Collections.sort(connections);
@@ -147,6 +149,19 @@ public class PeerProcess
 						result += ", ";
 					}
 					log.info("Peer " + myPeerId + " has the preferred neighbors " + result);
+					
+					if (connections.size() >  0) {
+						shouldSuicide = true;
+						for (int j = 0; j < connections.size(); j++) {
+							if (!connections.get(j).getRemotePeerInfo().hasFile())
+								shouldSuicide = false;
+						}
+						
+						if (shouldSuicide) {
+							log.info("All peers have file. Shutting down.");
+							es.shutdownNow();
+						}
+					}
 				}
 			}
 			, 0, myConfig.UnchokingInterval*1000);
@@ -155,6 +170,8 @@ public class PeerProcess
 				new java.util.TimerTask() { 
 					public void run() {
 						//PeerProcess.log.info("Optimistic unchoking timer went off");
+						if (shouldSuicide)
+							this.cancel();
 					}
 				}
 				, 0, myConfig.OptimisticUnchokingInterval*1000);

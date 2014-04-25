@@ -77,7 +77,7 @@ public class Bitfield
 		
 		for(byte b : bitfield)
 		{
-			if (b == 0)
+			if (b == (byte)0)
 				complete = false;
 		}
 		
